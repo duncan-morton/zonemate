@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import ParticipantRow from "./ParticipantRow";
+import OverlapBar from "./OverlapBar";
+import { getOverlapSegments, getSuggestedWindows, type Participant } from "@/lib/overlap";
 
-interface Participant {
+interface ParticipantData extends Participant {
   id: string;
-  name: string;
-  timezone: string;
 }
 
 function generateId(): string {
@@ -14,7 +14,7 @@ function generateId(): string {
 }
 
 export default function TimezoneCompare() {
-  const [participants, setParticipants] = useState<Participant[]>(() => [
+  const [participants, setParticipants] = useState<ParticipantData[]>(() => [
     { id: generateId(), name: "", timezone: "" },
     { id: generateId(), name: "", timezone: "" },
   ]);
@@ -60,6 +60,28 @@ export default function TimezoneCompare() {
   const canAdd = participants.length < 6;
   const canRemove = participants.length > 2;
 
+  const participantsWithTimezone = useMemo(
+    () => participants.filter((p) => p.timezone),
+    [participants]
+  );
+
+  const allParticipantsHaveTimezone =
+    participants.length > 0 &&
+    participants.length === participantsWithTimezone.length;
+
+  const overlapSegments = useMemo(
+    () => getOverlapSegments(participants as Participant[], currentTime),
+    [participants, currentTime]
+  );
+
+  const suggestedWindows = useMemo(
+    () => getSuggestedWindows(participants as Participant[], currentTime),
+    [participants, currentTime]
+  );
+
+  const hasNoOverlap =
+    allParticipantsHaveTimezone && overlapSegments.length === 0;
+
   return (
     <div className="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
       <h2 className="mb-6 text-xl font-semibold">Timezone Comparison Tool</h2>
@@ -87,6 +109,47 @@ export default function TimezoneCompare() {
             Add participant
           </button>
         </div>
+
+        {allParticipantsHaveTimezone && (
+          <div className="mt-6 space-y-4 border-t border-neutral-200 pt-6">
+            <div>
+              <h3 className="mb-2 text-sm font-medium text-neutral-700">
+                Working hours overlap (09:00–17:00)
+              </h3>
+              <OverlapBar segments={overlapSegments} />
+            </div>
+
+            {hasNoOverlap ? (
+              <div className="rounded-md border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600">
+                No overlap within 09:00–17:00 for everyone. Try adjusting
+                participants or consider rotating meeting times.
+              </div>
+            ) : suggestedWindows.length > 0 ? (
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-neutral-700">
+                  Suggested meeting times (your time):
+                </h3>
+                <div className="space-y-2">
+                  {suggestedWindows.map((window, index) => (
+                    <div
+                      key={index}
+                      className="rounded-md border border-neutral-200 bg-neutral-50 px-4 py-2 text-sm text-neutral-700"
+                    >
+                      {window.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
+
+        {!allParticipantsHaveTimezone && participants.length > 0 && (
+          <div className="mt-6 rounded-md border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600">
+            Select a timezone for each participant to see overlap and suggested
+            meeting times.
+          </div>
+        )}
       </div>
     </div>
   );
