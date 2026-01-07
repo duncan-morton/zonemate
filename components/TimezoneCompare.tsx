@@ -1,23 +1,53 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import ParticipantRow from "./ParticipantRow";
 import OverlapBar from "./OverlapBar";
 import { getOverlapSegments, getSuggestedWindows, type Participant } from "@/lib/overlap";
+import type { Language } from "@/lib/greetings";
+import {
+  getParticipantsFromURL,
+  updateURLWithParticipants,
+  type ParticipantData as ShareParticipantData,
+} from "@/lib/shareState";
 
 interface ParticipantData extends Participant {
   id: string;
+  language: Language;
 }
 
 function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
+function createParticipantData(
+  data: ShareParticipantData,
+  id?: string
+): ParticipantData {
+  return {
+    id: id || generateId(),
+    name: data.name,
+    timezone: data.timezone,
+    language: data.language,
+  };
+}
+
 export default function TimezoneCompare() {
-  const [participants, setParticipants] = useState<ParticipantData[]>(() => [
-    { id: generateId(), name: "", timezone: "" },
-    { id: generateId(), name: "", timezone: "" },
-  ]);
+  const [participants, setParticipants] = useState<ParticipantData[]>(() => {
+    const urlParticipants = getParticipantsFromURL();
+
+    if (urlParticipants.length >= 2 && urlParticipants.length <= 6) {
+      return urlParticipants.map((p) => createParticipantData(p));
+    }
+
+    return [
+      { id: generateId(), name: "", timezone: "", language: "EN" },
+      { id: generateId(), name: "", timezone: "", language: "EN" },
+    ];
+  });
+
+  const [isInitialized, setIsInitialized] = useState(false);
+  const isRestoringFromURL = useRef(false);
 
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -28,6 +58,53 @@ export default function TimezoneCompare() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      isRestoringFromURL.current = true;
+      const urlParticipants = getParticipantsFromURL();
+
+      if (urlParticipants.length >= 2 && urlParticipants.length <= 6) {
+        setParticipants(urlParticipants.map((p) => createParticipantData(p)));
+      } else if (urlParticipants.length === 0) {
+        setParticipants([
+          { id: generateId(), name: "", timezone: "", language: "EN" },
+          { id: generateId(), name: "", timezone: "", language: "EN" },
+        ]);
+      }
+
+      requestAnimationFrame(() => {
+        isRestoringFromURL.current = false;
+      });
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  // Update URL when participants change (after initial load)
+  useEffect(() => {
+    if (!isInitialized) {
+      setIsInitialized(true);
+      return;
+    }
+
+    if (isRestoringFromURL.current) {
+      return;
+    }
+
+    const shareData: ShareParticipantData[] = participants.map((p) => ({
+      name: p.name,
+      timezone: p.timezone,
+      language: p.language,
+    }));
+
+    updateURLWithParticipants(shareData);
+  }, [participants, isInitialized]);
 
   const handleNameChange = useCallback((id: string, name: string) => {
     setParticipants((prev) =>
@@ -41,11 +118,17 @@ export default function TimezoneCompare() {
     );
   }, []);
 
+  const handleLanguageChange = useCallback((id: string, language: Language) => {
+    setParticipants((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, language } : p))
+    );
+  }, []);
+
   const handleAddParticipant = useCallback(() => {
     if (participants.length >= 6) return;
     setParticipants((prev) => [
       ...prev,
-      { id: generateId(), name: "", timezone: "" },
+      { id: generateId(), name: "", timezone: "", language: "EN" },
     ]);
   }, [participants.length]);
 
@@ -92,8 +175,10 @@ export default function TimezoneCompare() {
             id={participant.id}
             name={participant.name}
             timezone={participant.timezone}
+            language={participant.language}
             onNameChange={handleNameChange}
             onTimezoneChange={handleTimezoneChange}
+            onLanguageChange={handleLanguageChange}
             onRemove={handleRemoveParticipant}
             canRemove={canRemove}
             currentTime={currentTime}

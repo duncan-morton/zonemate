@@ -2,13 +2,21 @@
 
 import { useMemo } from "react";
 import { TIMEZONES } from "@/lib/timezones";
+import {
+  getTimeOfDayForTimezone,
+  getGreeting,
+  getLanguageOptions,
+  type Language,
+} from "@/lib/greetings";
 
 interface ParticipantRowProps {
   id: string;
   name: string;
   timezone: string;
+  language: Language;
   onNameChange: (id: string, name: string) => void;
   onTimezoneChange: (id: string, timezone: string) => void;
+  onLanguageChange: (id: string, language: Language) => void;
   onRemove: (id: string) => void;
   canRemove: boolean;
   currentTime: Date;
@@ -18,8 +26,10 @@ export default function ParticipantRow({
   id,
   name,
   timezone,
+  language,
   onNameChange,
   onTimezoneChange,
+  onLanguageChange,
   onRemove,
   canRemove,
   currentTime,
@@ -105,6 +115,26 @@ export default function ParticipantRow({
     }
   }, [timezone, currentTime]);
 
+  const greetingInfo = useMemo(() => {
+    if (!timezone) {
+      return null;
+    }
+
+    const timeOfDay = getTimeOfDayForTimezone(currentTime, timezone);
+    if (!timeOfDay) {
+      return null;
+    }
+
+    const greeting = getGreeting(language, timeOfDay);
+
+    return {
+      greeting,
+      timeOfDay,
+    };
+  }, [timezone, currentTime, language]);
+
+  const languageOptions = getLanguageOptions();
+
   return (
     <div className="space-y-3 rounded-lg border border-neutral-200 bg-white p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -139,6 +169,23 @@ export default function ParticipantRow({
             ))}
           </select>
         </div>
+        <div className="flex-1">
+          <label htmlFor={`language-${id}`} className="mb-1 block text-sm font-medium text-neutral-700">
+            Language
+          </label>
+          <select
+            id={`language-${id}`}
+            value={language}
+            onChange={(e) => onLanguageChange(id, e.target.value as Language)}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-500"
+          >
+            {languageOptions.map((lang) => (
+              <option key={lang.value} value={lang.value}>
+                {lang.label}
+              </option>
+            ))}
+          </select>
+        </div>
         {canRemove && (
           <div className="flex items-end">
             <button
@@ -152,14 +199,21 @@ export default function ParticipantRow({
         )}
       </div>
       {timezone && timeDisplay && (
-        <div className="flex flex-wrap items-center gap-3 text-sm">
-          <div className="text-lg font-semibold text-neutral-900">
-            {timeDisplay.localTime}
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <div className="text-lg font-semibold text-neutral-900">
+              {timeDisplay.localTime}
+            </div>
+            {timeDisplay.dayLabel && (
+              <div className="text-neutral-600">{timeDisplay.dayLabel}</div>
+            )}
+            <div className="text-neutral-600">{timeDisplay.utcOffset}</div>
           </div>
-          {timeDisplay.dayLabel && (
-            <div className="text-neutral-600">{timeDisplay.dayLabel}</div>
+          {greetingInfo && (
+            <div className="text-xs text-slate-500">
+              Suggested greeting ({greetingInfo.timeOfDay}): "{greetingInfo.greeting}"
+            </div>
           )}
-          <div className="text-neutral-600">{timeDisplay.utcOffset}</div>
         </div>
       )}
     </div>
