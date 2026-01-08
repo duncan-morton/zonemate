@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import HubPage from "@/components/HubPage";
 import { getAllHubs, getHubBySlug } from "@/lib/hubs";
 import { SITE_NAME, SITE_URL } from "@/lib/siteConfig";
+import { makeBreadcrumbList } from "@/lib/seo/jsonld";
 
 export const revalidate = 86400; // 24 hours ISR
 
@@ -48,12 +49,24 @@ export default async function HubDetailPage({
     notFound();
   }
 
+  const breadcrumbJsonLd = makeBreadcrumbList([
+    { name: "Home", url: SITE_URL },
+    { name: "Hubs", url: `${SITE_URL}/hubs` },
+    { name: hub.title, url: `${SITE_URL}/hubs/${slug}` },
+  ]);
+
   return (
-    <HubPage
-      title={hub.title}
-      description={hub.description}
-      scenarioSlugs={hub.scenarioSlugs}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <HubPage
+        title={hub.title}
+        description={hub.description}
+        scenarioSlugs={hub.scenarioSlugs}
+      />
+    </>
   );
 }
 

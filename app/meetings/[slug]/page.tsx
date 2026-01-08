@@ -9,6 +9,7 @@ import {
   getCityByKey,
 } from "@/lib/scenarios";
 import { SITE_NAME, SITE_URL } from "@/lib/siteConfig";
+import { makeBreadcrumbList } from "@/lib/seo/jsonld";
 
 export const revalidate = 86400; // 24 hours ISR
 
@@ -80,14 +81,26 @@ export default async function ScenarioDetailPage({
       ? `Coordinate meetings between ${cityNames}. Find overlapping working hours and suggested meeting times across timezones.`
       : `Coordinate meetings between ${cityNames}. Find overlapping working hours and suggested meeting times across multiple timezones.`;
 
+  const breadcrumbJsonLd = makeBreadcrumbList([
+    { name: "Home", url: SITE_URL },
+    { name: "Meetings", url: `${SITE_URL}/meetings` },
+    { name: scenario.title, url: `${SITE_URL}/meetings/${slug}` },
+  ]);
+
   return (
-    <ScenarioPage
-      title={scenario.title}
-      description={description}
-      participants={participants}
-      prefillQueryString={prefillQueryString}
-      relatedScenarios={relatedScenarios}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <ScenarioPage
+        title={scenario.title}
+        description={description}
+        participants={participants}
+        prefillQueryString={prefillQueryString}
+        relatedScenarios={relatedScenarios}
+      />
+    </>
   );
 }
 
