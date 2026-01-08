@@ -34,8 +34,8 @@ export default function TermsPage() {
             with applicable laws and regulations.
           </li>
           <li>
-            <strong>Changes over time.</strong> These terms may be updated from time to
-            time. Continued use constitutes acceptance of the updated terms.
+            <strong>Changes over time.</strong> These terms may be updated. Continued use
+            means you accept the updated terms.
           </li>
         </ul>
       </div>

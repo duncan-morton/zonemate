@@ -29,16 +29,15 @@ export default function PrivacyPage() {
             users or collect personal information.
           </li>
           <li>
-            <strong>Vercel Analytics.</strong> We use Vercel Analytics for aggregate,
-            privacy-respecting analytics. This does not collect personal data or
-            create user profiles.
+            <strong>Vercel Analytics.</strong> We use Vercel Analytics for aggregate
+            analytics. This does not collect personal data or create user profiles.
           </li>
           <li>
             <strong>No personal data is sold.</strong> We do not sell, rent, or share
             personal information with third parties.
           </li>
           <li>
-            <strong>Contact.</strong> Contact coming soon.
+            <strong>Contact.</strong> Contact information coming soon.
           </li>
         </ul>
       </div>

@@ -22,14 +22,13 @@ export default function AboutPage() {
           efficiently.
         </p>
         <p>
-          Our focus is on speed, privacy, and clarity. All calculations run locally in
-          your browser, with no data sent to servers. The tool is fast, free, and
-          respects your privacy—no cookies, no tracking, no data collection.
+          All calculations run locally in your browser. No data is sent to servers. The
+          tool is fast, free, and respects your privacy. No cookies, no tracking, no data
+          collection.
         </p>
         <p>
-          ZoneMate can also be embedded on your website or documentation using our
-          embed widget, making it easy to share timezone coordination tools with your
-          team or community.
+          ZoneMate can also be embedded on your website or documentation using our embed
+          widget.
         </p>
       </div>
     </main>
