@@ -12,12 +12,22 @@ const US_CITIES = new Set([
   "san-francisco",
   "chicago",
   "los-angeles",
+  "denver",
+  "phoenix",
 ]);
 
 const EUROPE_CITIES = new Set([
   "london",
   "berlin",
   "paris",
+  "amsterdam",
+  "madrid",
+  "rome",
+  "zurich",
+  "stockholm",
+  "warsaw",
+  "dublin",
+  "lisbon",
 ]);
 
 const ASIA_CITIES = new Set([
@@ -26,6 +36,15 @@ const ASIA_CITIES = new Set([
   "sydney",
   "mumbai",
   "dubai",
+  "hong-kong",
+  "seoul",
+  "shanghai",
+  "bangkok",
+  "jakarta",
+  "manila",
+  "kuala-lumpur",
+  "melbourne",
+  "auckland",
 ]);
 
 function isUSEuropeScenario(scenario: { cities: string[] }): boolean {
@@ -54,23 +73,27 @@ export function getAllHubs(): Hub[] {
   const allScenarios = getAllScenarios();
 
   const meetingTimesScenarios = allScenarios
-    .slice(0, 25)
+    .slice(0, 35)
     .map((s) => s.slug);
 
   const usEuropeScenarios = allScenarios
     .filter(isUSEuropeScenario)
+    .slice(0, 35)
     .map((s) => s.slug);
 
   const usAsiaScenarios = allScenarios
     .filter(isUSAsiaScenario)
+    .slice(0, 35)
     .map((s) => s.slug);
 
   const europeAsiaScenarios = allScenarios
     .filter(isEuropeAsiaScenario)
+    .slice(0, 35)
     .map((s) => s.slug);
 
   const threeTimezoneScenarios = allScenarios
     .filter(isThreeTimezoneScenario)
+    .slice(0, 40)
     .map((s) => s.slug);
 
   return [
