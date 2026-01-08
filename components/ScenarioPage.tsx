@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import TimezoneCompare from "@/components/TimezoneCompare";
+import MonetizationSlot from "@/components/MonetizationSlot";
 import { SITE_URL } from "@/lib/siteConfig";
 
 interface ScenarioPageProps {
@@ -52,6 +53,8 @@ export default function ScenarioPage({
       <div className="mb-12 rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
         {isUrlSet && <TimezoneCompare />}
       </div>
+
+      <MonetizationSlot />
 
       {relatedScenarios.length > 0 && (
         <div className="border-t border-neutral-200 pt-8">

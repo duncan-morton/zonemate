@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import TimezoneConvert from "@/components/TimezoneConvert";
+import MonetizationSlot from "@/components/MonetizationSlot";
 import { SITE_NAME, SITE_URL } from "@/lib/siteConfig";
 import { makeBreadcrumbList } from "@/lib/seo/jsonld";
 
@@ -32,6 +33,7 @@ export default function ConvertPage() {
           browser-based timezone conversion tool.
         </p>
         <TimezoneConvert />
+        <MonetizationSlot />
         <div className="mt-12 border-t border-neutral-200 pt-8">
           <h2 className="mb-3 text-sm font-semibold text-neutral-900">
             Related tools
