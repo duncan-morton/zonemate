@@ -13,10 +13,10 @@ export default function SiteFooter() {
           </p>
           <nav className="flex flex-wrap items-center gap-6">
             <Link
-              href="/embed"
+              href="/convert"
               className="text-sm text-neutral-600 hover:text-neutral-900"
             >
-              Embed
+              Convert
             </Link>
             <Link
               href="/meetings"
@@ -29,6 +29,12 @@ export default function SiteFooter() {
               className="text-sm text-neutral-600 hover:text-neutral-900"
             >
               Hubs
+            </Link>
+            <Link
+              href="/embed"
+              className="text-sm text-neutral-600 hover:text-neutral-900"
+            >
+              Embed
             </Link>
           </nav>
         </div>

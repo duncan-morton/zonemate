@@ -14,6 +14,12 @@ export default function SiteHeader() {
           </Link>
           <div className="flex flex-wrap items-center gap-6">
             <Link
+              href="/convert"
+              className="text-sm text-neutral-600 hover:text-neutral-900"
+            >
+              Convert
+            </Link>
+            <Link
               href="/meetings"
               className="text-sm text-neutral-600 hover:text-neutral-900"
             >
