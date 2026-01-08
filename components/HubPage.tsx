@@ -48,26 +48,55 @@ export default function HubPage({
         </Link>
       </div>
 
-      <section className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold">Common scenarios</h2>
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {scenarioSlugs.map((slug) => {
-            const scenarioTitle = getScenarioTitleBySlug(slug);
-            if (!scenarioTitle) return null;
+      {scenarioSlugs.length > 0 && (
+        <>
+          {scenarioSlugs.length >= 8 && (
+            <section className="mb-12">
+              <h2 className="mb-6 text-2xl font-semibold">Popular pairs</h2>
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {scenarioSlugs
+                  .slice(0, Math.min(12, scenarioSlugs.length))
+                  .map((slug) => {
+                    const scenarioTitle = getScenarioTitleBySlug(slug);
+                    if (!scenarioTitle) return null;
 
-            return (
-              <li key={slug}>
-                <Link
-                  href={`/meetings/${slug}`}
-                  className="block rounded-md border border-neutral-200 bg-white px-4 py-3 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900"
-                >
-                  {scenarioTitle}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+                    return (
+                      <li key={slug}>
+                        <Link
+                          href={`/meetings/${slug}`}
+                          className="block rounded-md border border-neutral-200 bg-white px-4 py-3 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900"
+                        >
+                          {scenarioTitle}
+                        </Link>
+                      </li>
+                    );
+                  })}
+              </ul>
+            </section>
+          )}
+
+          <section className="mb-12">
+            <h2 className="mb-6 text-2xl font-semibold">Common scenarios</h2>
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {scenarioSlugs.map((slug) => {
+                const scenarioTitle = getScenarioTitleBySlug(slug);
+                if (!scenarioTitle) return null;
+
+                return (
+                  <li key={slug}>
+                    <Link
+                      href={`/meetings/${slug}`}
+                      className="block rounded-md border border-neutral-200 bg-white px-4 py-3 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900"
+                    >
+                      {scenarioTitle}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        </>
+      )}
 
       <section className="border-t border-neutral-200 pt-8">
         <h2 className="mb-4 text-xl font-semibold">Frequently asked questions</h2>
