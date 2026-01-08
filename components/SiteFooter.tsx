@@ -11,7 +11,7 @@ export default function SiteFooter() {
           <p className="text-sm text-neutral-600">
             © {currentYear} {SITE_NAME}
           </p>
-          <nav className="flex flex-wrap items-center gap-6">
+          <nav className="flex flex-wrap items-center gap-4 sm:gap-6">
             <Link
               href="/convert"
               className="text-sm text-neutral-600 hover:text-neutral-900"
@@ -35,6 +35,24 @@ export default function SiteFooter() {
               className="text-sm text-neutral-600 hover:text-neutral-900"
             >
               Embed
+            </Link>
+            <Link
+              href="/about"
+              className="text-sm text-neutral-600 hover:text-neutral-900"
+            >
+              About
+            </Link>
+            <Link
+              href="/privacy"
+              className="text-sm text-neutral-600 hover:text-neutral-900"
+            >
+              Privacy
+            </Link>
+            <Link
+              href="/terms"
+              className="text-sm text-neutral-600 hover:text-neutral-900"
+            >
+              Terms
             </Link>
           </nav>
         </div>
