@@ -5,22 +5,23 @@ import { getAllHubs } from "@/lib/hubs";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const baseUrl = SITE_URL.trim();
 
   const baseUrls: MetadataRoute.Sitemap = [
     {
-      url: SITE_URL,
+      url: baseUrl,
       lastModified: now,
       changeFrequency: "daily",
       priority: 1.0,
     },
     {
-      url: `${SITE_URL}/meetings`,
+      url: `${baseUrl}/meetings`.trim(),
       lastModified: now,
       changeFrequency: "daily",
       priority: 0.8,
     },
     {
-      url: `${SITE_URL}/hubs`,
+      url: `${baseUrl}/hubs`.trim(),
       lastModified: now,
       changeFrequency: "daily",
       priority: 0.8,
@@ -29,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const scenarioUrls: MetadataRoute.Sitemap = getAllScenarios().map(
     (scenario) => ({
-      url: `${SITE_URL}/meetings/${scenario.slug}`,
+      url: `${baseUrl}/meetings/${scenario.slug.trim()}`.trim(),
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.6,
@@ -37,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   const hubUrls: MetadataRoute.Sitemap = getAllHubs().map((hub) => ({
-    url: `${SITE_URL}/hubs/${hub.slug}`,
+    url: `${baseUrl}/hubs/${hub.slug.trim()}`.trim(),
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.6,
